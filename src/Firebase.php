@@ -18,6 +18,10 @@ class Firebase extends Component
     /**
      * @var string
      */
+    public $credential_json_string;
+    /**
+     * @var string
+     */
     public $database_uri = false;
     /**
      * @var ServiceAccount
@@ -40,7 +44,11 @@ class Firebase extends Component
         if (!$this->_serviceAccount) {
             try {
                 if (!$this->credential_file) {
-                    $this->_serviceAccount = ServiceAccount::discover();
+                    if ($this->credential_json_string) {
+                        $this->_serviceAccount = ServiceAccount::fromJson(trim(trim($this->credential_json_string,"'"), '"'));
+                    } else {
+                        $this->_serviceAccount = ServiceAccount::discover();
+                    }
                 } else {
                     $this->_serviceAccount = ServiceAccount::fromJsonFile($this->credential_file);
                 }
